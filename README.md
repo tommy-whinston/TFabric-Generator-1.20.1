@@ -1,13 +1,12 @@
-# TFabric-Generator-1.20.1 + OBJ
+# TFabric-Generator-1.20.1
 
-> Fabric 1.20.1 generator add-on for MCreator 2024.4 with OBJ block models,
-> loot tables, block/plant/tool tags and sapling trees.
+> Fabric 1.20.1 generator add-on for MCreator 2024.4 with extra block,
+> item and plant features.
 
-Аддон-генератор для MCreator 2024.4. Добавляет в генератор
-`Minecraft Fabric 1.20.1` поддержку OBJ-моделей блоков без сторонних модов
-и без ручного редактирования Java-файлов.
+Аддон-генератор для MCreator 2024.4 на базе Minecraft Fabric 1.20.1
+с дополнительными возможностями для блоков, предметов и растений.
 
-## Что добавлено относительно Forge-генератора
+## Возможности
 
 - OBJ-модели блоков и предметов блоков (выбор модели у блока, авто-привязка,
   текстуры, повороты `facing`/`axis`, центрирование origin).
@@ -37,7 +36,7 @@ Fabric fluid API, рендер, ведро и теги).
 
 При создании нового воркспейса выберите генератор:
 
-> TFabric-Generator-1.20.1 + OBJ for 1.20.1 - 0.90.7
+> TFabric-Generator-1.20.1 for 1.20.1 - 0.90.7
 
 Старые воркспейсы, созданные на обычном `fabric-1.20.1`, этот генератор
 автоматически не переключает. Для нового проекта просто выберите этот

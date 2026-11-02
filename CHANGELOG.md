@@ -2,7 +2,7 @@
 
 ## 1.0.0
 
-- Initial public release of **TFabric-Generator-1.20.1 + OBJ**.
+- Initial public release of **TFabric-Generator-1.20.1**.
 - Fabric 1.20.1 generator for MCreator 2024.4.
 - OBJ block models selected in the block editor, with automatic manifest,
   texture lookup, rotations and item model support.
