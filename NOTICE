@@ -1,0 +1,12 @@
+TFabric-Generator-1.20.1 + OBJ
+Author: Tommy_Whinston
+
+Based on the Fabric Generator for MCreator by Goldorion and 300f20t.
+The generator templates and definitions contain their original copyright
+headers and are distributed under the same terms.
+
+MCreator generator templates are distributed under GPL-3.0 with the
+MCreator template exception. The OBJ model loader, bug fixes and additional
+templates are by Tommy_Whinston.
+
+Full license text: see LICENSE (LGPL-3.0).

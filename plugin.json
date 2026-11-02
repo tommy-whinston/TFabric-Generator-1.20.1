@@ -1,0 +1,11 @@
+{
+  "id": "tfabric-generator-1.20.1",
+  "supportedversions": [2024004, 2025001, 2025002],
+  "info": {
+    "name": "TFabric-Generator-1.20.1 + OBJ",
+    "version": "1.0.0",
+    "description": "Fabric 1.20.1 generator with built-in OBJ block model support. Drop an OBJ into assets/<modid>/models/item/<block>.obj and it is registered automatically, without any external model mod.",
+    "author": "Tommy_Whinston",
+    "credits": "Based on the Fabric Generator for MCreator by Goldorion and 300f20t"
+  }
+}
