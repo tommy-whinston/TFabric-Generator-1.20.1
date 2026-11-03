@@ -29,11 +29,18 @@
 
 <#-- @formatter:off -->
 
+<#include "../procedures.java.ftl">
+
 /*
  *	MCreator note: This file will be REGENERATED on each build.
  */
 
 package ${package}.init;
+
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class ${JavaModName}Menus {
 
@@ -47,6 +54,21 @@ public class ${JavaModName}Menus {
 					"${gui.getModElement().getRegistryName()}"),
 			 new ExtendedScreenHandlerType<>(${gui.getModElement().getName()}Menu::new));
 			${gui.getModElement().getName()}Menu.screenInit();
+
+			<#if hasProcedure(gui.onTick)>
+			ServerTickEvents.END_SERVER_TICK.register(server -> {
+				for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+					if (player.containerMenu instanceof ${gui.getModElement().getName()}Menu) {
+						Player entity = player;
+						Level world = player.level();
+						double x = player.getX();
+						double y = player.getY();
+						double z = player.getZ();
+						<@procedureOBJToCode gui.onTick/>
+					}
+				}
+			});
+			</#if>
 		</#list>
 	}
 

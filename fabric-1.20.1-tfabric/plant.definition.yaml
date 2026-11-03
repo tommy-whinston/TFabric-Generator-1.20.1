@@ -93,4 +93,4 @@ tags:
   - tag: BLOCKS:minecraft:saplings
     condition: "plantType %= sapling"
 
-field_exclusions: [ creativePickItem, aiPathNodeType, growapableSpawnType ]
+field_exclusions: [ aiPathNodeType, growapableSpawnType ]

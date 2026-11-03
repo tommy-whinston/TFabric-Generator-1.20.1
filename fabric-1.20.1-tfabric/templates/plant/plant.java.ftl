@@ -46,6 +46,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.fabricmc.api.Environment;
 
+<#if data.creativePickItem?? && !data.creativePickItem.isEmpty()>
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.phys.HitResult;
+</#if>
+
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 
 <#compress>
@@ -302,6 +308,12 @@ public class ${name}Block extends <#if data.plantType == "normal">Flower<#elseif
 				else
 					return this.mayPlaceOn(groundState, worldIn, blockpos)
 			</#if>;
+		}
+	</#if>
+
+	<#if data.creativePickItem?? && !data.creativePickItem.isEmpty()>
+		@Override public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+			return ${mappedMCItemToItemStackCode(data.creativePickItem, 1)};
 		}
 	</#if>
 

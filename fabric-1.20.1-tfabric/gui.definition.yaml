@@ -18,7 +18,7 @@ global_templates:
   - template: elementinits/screens.java.ftl
     name: "@SRCROOT/@BASEPACKAGEPATH/init/@JavaModNameScreens.java"
 
-field_exclusions: [ onTick ]
+// no field exclusions
 
 localizationkeys:
   - fromlist: data.getFixedTextLabels()

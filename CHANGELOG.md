@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
+- Added `creativePickItem` support for plant blocks.
+- Added GUI `onTick` support using Fabric `ServerTickEvents`.
+
 ## 1.0.1
 
 - Fixed `NullPointerException` when saving elements in workspaces that contain
