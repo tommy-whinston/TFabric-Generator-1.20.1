@@ -25,6 +25,11 @@ public final class ObjModelDefinition {
 	public final ResourceLocation modelId;
 	public final ResourceLocation objLocation;
 	public final ResourceLocation texture;
+	public final java.util.Map<String, ResourceLocation> textures;
+	public final String display;
+	public final int tintIndex;
+	public final boolean culling;
+	public final boolean doubleSided;
 	public final float scale;
 	public final float offsetX;
 	public final float offsetY;
@@ -38,12 +43,18 @@ public final class ObjModelDefinition {
 	public final ObjGeometry geometry;
 
 	private ObjModelDefinition(ResourceLocation blockId, ResourceLocation modelId, ResourceLocation objLocation, ResourceLocation texture,
-			float scale, float offsetX, float offsetY, float offsetZ, boolean flipU, boolean flipV, boolean ambientOcclusion,
-			boolean gui3d, boolean shade, boolean blockLight, ObjGeometry geometry) {
+			java.util.Map<String, ResourceLocation> textures, String display, int tintIndex, boolean culling, boolean doubleSided, float scale,
+			float offsetX, float offsetY, float offsetZ, boolean flipU, boolean flipV, boolean ambientOcclusion, boolean gui3d,
+			boolean shade, boolean blockLight, ObjGeometry geometry) {
 		this.blockId = blockId;
 		this.modelId = modelId;
 		this.objLocation = objLocation;
 		this.texture = texture;
+		this.textures = textures;
+		this.display = display;
+		this.tintIndex = tintIndex;
+		this.culling = culling;
+		this.doubleSided = doubleSided;
 		this.scale = scale;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
@@ -66,12 +77,13 @@ public final class ObjModelDefinition {
 
 		String modelValue = getString(json, "model", null);
 		ResourceLocation modelId = resolveModelLocation(blockId, modelValue != null ? modelValue : "block/" + blockId.getPath());
+		String display = getString(json, "display", modelId.getPath().startsWith("item/") ? "item" : "block");
 
 		String textureValue = getString(json, "texture", null);
 		ResourceLocation texture = textureValue != null ? resolveTextureLocation(blockId, textureValue)
 				: resolveTexture(blockId, objLocation, manager);
 
-		return create(blockId, modelId, objLocation, texture, json, manager);
+		return create(blockId, modelId, objLocation, texture, display, json, manager);
 	}
 
 	/**
@@ -82,7 +94,7 @@ public final class ObjModelDefinition {
 	public static ObjModelDefinition auto(ResourceLocation blockId, ResourceLocation objLocation, ResourceManager manager) {
 		ResourceLocation modelId = new ResourceLocation(blockId.getNamespace(), "block/" + blockId.getPath());
 		ResourceLocation texture = resolveTexture(blockId, objLocation, manager);
-		return create(blockId, modelId, objLocation, texture, new JsonObject(), manager);
+		return create(blockId, modelId, objLocation, texture, "block", new JsonObject(), manager);
 	}
 
 	/**
@@ -172,13 +184,66 @@ public final class ObjModelDefinition {
 		return slash >= 0 ? path.substring(slash + 1) : path;
 	}
 
+	/**
+	 * Reads all material -&gt; texture mappings from MCreator's .obj.textures
+	 * sidecar. Used for multi-texture OBJ models.
+	 */
+	private static Map<String, ResourceLocation> readModelTextures(ResourceLocation blockId, ResourceLocation objLocation,
+			ResourceManager manager) {
+		Map<String, ResourceLocation> result = new java.util.HashMap<>();
+		ResourceLocation sidecar = new ResourceLocation(objLocation.getNamespace(), objLocation.getPath() + ".textures");
+		Optional<Resource> resource = manager.getResource(sidecar);
+		if (resource.isEmpty()) {
+			return result;
+		}
+
+		try (BufferedReader reader = resource.get().openAsReader()) {
+			JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+			JsonObject mappings = root.getAsJsonObject("mappings");
+			if (mappings == null) {
+				return result;
+			}
+
+			for (Map.Entry<String, JsonElement> mappingEntry : mappings.entrySet()) {
+				if (!mappingEntry.getValue().isJsonObject()) {
+					continue;
+				}
+				JsonObject mapping = mappingEntry.getValue().getAsJsonObject();
+				if (!mapping.has("map") || !mapping.get("map").isJsonObject()) {
+					continue;
+				}
+
+				for (Map.Entry<String, JsonElement> textureEntry : mapping.getAsJsonObject("map").entrySet()) {
+					if (textureEntry.getValue().isJsonPrimitive() && textureEntry.getValue().getAsJsonPrimitive().isString()) {
+						String value = textureEntry.getValue().getAsString().trim();
+						if (!value.isEmpty()) {
+							ResourceLocation tex = resolveTextureLocation(blockId, value);
+							if (!textureExists(tex, manager)) {
+								ResourceLocation item = new ResourceLocation(tex.getNamespace(), "item/" + leafName(tex.getPath()));
+								if (textureExists(item, manager)) {
+									tex = item;
+								}
+							}
+							result.put(textureEntry.getKey(), tex);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.warn("Failed to read model texture metadata '{}' for '{}'", sidecar, blockId, e);
+		}
+		return result;
+	}
+
 	private static ObjModelDefinition create(ResourceLocation blockId, ResourceLocation modelId, ResourceLocation objLocation,
-			ResourceLocation texture, JsonObject json, ResourceManager manager) {
+			ResourceLocation texture, String display, JsonObject json, ResourceManager manager) {
 		Optional<Resource> resource = manager.getResource(objLocation);
 		if (resource.isEmpty()) {
 			LOGGER.warn("OBJ model file '{}' for '{}' was not found", objLocation, blockId);
 			return null;
 		}
+
+		java.util.Map<String, ResourceLocation> textures = readModelTextures(blockId, objLocation, manager);
 
 		ObjGeometry geometry;
 		try (BufferedReader reader = resource.get().openAsReader()) {
@@ -233,12 +298,15 @@ public final class ObjModelDefinition {
 		boolean gui3d = getBoolean(json, "gui_3d", true);
 		boolean shade = getBoolean(json, "shade", true);
 		boolean blockLight = getBoolean(json, "block_light", true);
+		int tintIndex = getInt(json, "tint_index", 0);
+		boolean culling = getBoolean(json, "culling", false);
+		boolean doubleSided = getBoolean(json, "double_sided", true);
 
 		LOGGER.info("Loaded OBJ model '{}' ({} faces, {} vertices) for '{}'", objLocation, geometry.faces.size(),
 				geometry.positions.length / 3, blockId);
 
-		return new ObjModelDefinition(blockId, modelId, objLocation, texture, scale, offsetX, offsetY, offsetZ, flipU, flipV,
-				ambientOcclusion, gui3d, shade, blockLight, geometry);
+		return new ObjModelDefinition(blockId, modelId, objLocation, texture, textures, display, tintIndex, culling, doubleSided, scale,
+				offsetX, offsetY, offsetZ, flipU, flipV, ambientOcclusion, gui3d, shade, blockLight, geometry);
 	}
 
 	/**
@@ -417,5 +485,9 @@ public final class ObjModelDefinition {
 
 	private static boolean getBoolean(JsonObject json, String name, boolean fallback) {
 		return json.has(name) ? json.get(name).getAsBoolean() : fallback;
+	}
+
+	private static int getInt(JsonObject json, String name, int fallback) {
+		return json.has(name) ? json.get(name).getAsInt() : fallback;
 	}
 }

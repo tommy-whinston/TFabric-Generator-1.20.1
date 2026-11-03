@@ -24,6 +24,13 @@ templates:
       - enableHelmet
       - "helmetItemRenderType #= 1"
     name: "@MODASSETSROOT/models/item/@registryname_helmet.json"
+  - template: json/item_cmodel_obj.json.ftl
+    writer: json
+    variables: "item=helmet"
+    condition:
+      - enableHelmet
+      - "helmetItemRenderType #= 2"
+    name: "@MODASSETSROOT/models/item/@registryname_helmet.json"
 
   # Body item model
   - template: json/item.json.ftl
@@ -46,6 +53,13 @@ templates:
     condition:
       - enableBody
       - "bodyItemRenderType #= 1"
+    name: "@MODASSETSROOT/models/item/@registryname_chestplate.json"
+  - template: json/item_cmodel_obj.json.ftl
+    writer: json
+    variables: "item=body"
+    condition:
+      - enableBody
+      - "bodyItemRenderType #= 2"
     name: "@MODASSETSROOT/models/item/@registryname_chestplate.json"
 
   # Leggings item model
@@ -70,6 +84,13 @@ templates:
       - enableLeggings
       - "leggingsItemRenderType #= 1"
     name: "@MODASSETSROOT/models/item/@registryname_leggings.json"
+  - template: json/item_cmodel_obj.json.ftl
+    writer: json
+    variables: "item=leggings"
+    condition:
+      - enableLeggings
+      - "leggingsItemRenderType #= 2"
+    name: "@MODASSETSROOT/models/item/@registryname_leggings.json"
 
   # Boots item model
   - template: json/item.json.ftl
@@ -92,6 +113,13 @@ templates:
     condition:
       - enableBoots
       - "bootsItemRenderType #= 1"
+    name: "@MODASSETSROOT/models/item/@registryname_boots.json"
+  - template: json/item_cmodel_obj.json.ftl
+    writer: json
+    variables: "item=boots"
+    condition:
+      - enableBoots
+      - "bootsItemRenderType #= 2"
     name: "@MODASSETSROOT/models/item/@registryname_boots.json"
 
 localizationkeys:

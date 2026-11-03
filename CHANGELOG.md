@@ -1,5 +1,47 @@
 # Changelog / История изменений
 
+## 1.1.0
+
+### English
+- OBJ models for **items, tools and armor pieces** (helmet, chestplate,
+  leggings, boots), generated through `obj_items_generated.json`.
+- Multiple textures per OBJ model through materials (`usemtl`) and MCreator's
+  `*.obj.textures` sidecar.
+- Dedicated item, tool and block transforms (first person, third person,
+  GUI, ground, head, fixed).
+- Rotation support for multipart blockstates that reference the OBJ model.
+- Added `display` to the manifest format and item lighting for OBJ items.
+- Face culling for block OBJ models is now **opt-in** (`"culling": true`).
+  It is disabled by default because complex models can lose faces or render
+  incorrectly with some Sodium/Iris shader setups.
+- Added the `tint_index` manifest option for tinted block models.
+- OBJ quads are now **double-sided by default** (`double_sided`): single-sided
+  models no longer show see-through gaps in the trunk and canopy.
+- README rewritten from scratch, new banner and screenshots, AI-development
+  disclosure, `CONTRIBUTING.md`, issue templates and GitHub Actions for
+  validation and releases.
+
+### Русский
+- OBJ-модели для **предметов, инструментов и брони** (шлем, нагрудник,
+  штаны, ботинки) через `obj_items_generated.json`.
+- Несколько текстур на OBJ-модель через материалы (`usemtl`) и sidecar
+  `*.obj.textures` от MCreator.
+- Отдельные трансформы для предметов, инструментов и блоков (рука, GUI,
+  земля, голова, рамка).
+- Culling граней у блочных OBJ-моделей теперь **опциональный**
+  (`"culling": true`) и по умолчанию выключен: сложные модели могут терять
+  грани или рендериться некорректно с некоторыми сборками Sodium/Iris.
+- Поддержка поворотов multipart-blockstate, если часть ссылается на
+  OBJ-модель.
+- В формат манифеста добавлено поле `display`; для OBJ-предметов
+  используется item-освещение.
+- Добавлена опция манифеста `tint_index` для тонированных блочных моделей.
+- Квады OBJ теперь **двусторонние по умолчанию** (`double_sided`):
+  односторонние модели больше не дают просветов в стволе и кроне.
+- README переписан с нуля (RU/EN), новый баннер и скриншоты, раздел о
+  разработке с ИИ, `CONTRIBUTING.md`, issue-шаблоны и GitHub Actions для
+  проверки и релизов.
+
 ## 1.0.2
 
 ### English

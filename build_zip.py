@@ -5,7 +5,7 @@ root = os.path.dirname(os.path.abspath(__file__))
 out = os.path.join(root, "TFabric-Generator-1.20.1.zip")
 
 excluded_files = {"build_zip.py", ".gitignore"}
-excluded_dirs = {".git", "__pycache__"}
+excluded_dirs = {".git", "__pycache__", ".github", "tools"}
 
 if os.path.exists(out):
     os.remove(out)

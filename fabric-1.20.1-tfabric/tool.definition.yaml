@@ -15,6 +15,10 @@ templates:
     writer: json
     condition: "renderType #= 1"
     name: "@MODASSETSROOT/models/item/@registryname.json"
+  - template: json/item_cmodel_obj.json.ftl
+    writer: json
+    condition: "renderType #= 2"
+    name: "@MODASSETSROOT/models/item/@registryname.json"
   - template: json/item_model_blocking.json.ftl
     writer: json
     condition: "toolType %= Shield"

@@ -3,8 +3,8 @@
   "supportedversions": [2024004, 2025001, 2025002],
   "info": {
     "name": "TFabric-Generator-1.20.1",
-    "version": "1.0.2",
-    "description": "Fabric 1.20.1 generator add-on for MCreator 2024.4 with extra features for blocks, items and plants.",
+    "version": "1.1.0",
+    "description": "An improved build of the Fabric 1.20.1 generator for MCreator 2024.4: crash fixes, tags, loot tables, trees, tools and extended model support.",
     "author": "Tommy_Whinston",
     "credits": "Based on the Fabric Generator for MCreator by Goldorion and 300f20t"
   }

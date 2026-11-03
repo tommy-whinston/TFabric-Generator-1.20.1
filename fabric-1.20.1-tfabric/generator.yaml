@@ -67,6 +67,9 @@ base_templates:
 - template: modbase/obj_models_generated.json.ftl
   writer: json
   name: "@MODASSETSROOT/obj_models_generated.json"
+- template: modbase/obj_items_generated.json.ftl
+  writer: json
+  name: "@MODASSETSROOT/obj_items_generated.json"
 - template: modbase/variableslist.java.ftl
   name: "@SRCROOT/@BASEPACKAGEPATH/network/@JavaModNameVariables.java"
   condition: hasVariables()

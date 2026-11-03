@@ -26,11 +26,13 @@ public final class ObjGeometry {
 		public final int[] vertices;
 		public final int[] texCoords;
 		public final int[] normals;
+		public final String material;
 
-		Face(int[] vertices, int[] texCoords, int[] normals) {
+		Face(int[] vertices, int[] texCoords, int[] normals, String material) {
 			this.vertices = vertices;
 			this.texCoords = texCoords;
 			this.normals = normals;
+			this.material = material;
 		}
 	}
 
@@ -39,6 +41,7 @@ public final class ObjGeometry {
 		List<float[]> uvs = new ArrayList<>();
 		List<float[]> normals = new ArrayList<>();
 		List<Face> faces = new ArrayList<>();
+		String currentMaterial = "";
 
 		String line;
 		while ((line = reader.readLine()) != null) {
@@ -63,9 +66,14 @@ public final class ObjGeometry {
 					require(parts, 4, line);
 					normals.add(new float[]{Float.parseFloat(parts[1]), Float.parseFloat(parts[2]), Float.parseFloat(parts[3])});
 				}
-				case "f" -> parseFace(parts, positions.size(), uvs.size(), normals.size(), faces, line);
+				case "f" -> parseFace(parts, positions.size(), uvs.size(), normals.size(), faces, currentMaterial, line);
+				case "usemtl" -> {
+					if (parts.length > 1) {
+						currentMaterial = parts[1];
+					}
+				}
 				default -> {
-					// mtllib, usemtl, o, g, s, l, p ... are not needed here
+					// mtllib, o, g, s, l, p ... are not needed here
 				}
 			}
 		}
@@ -73,7 +81,8 @@ public final class ObjGeometry {
 		return new ObjGeometry(flatten3(positions), flatten2(uvs), flatten3(normals), faces);
 	}
 
-	private static void parseFace(String[] parts, int positionCount, int uvCount, int normalCount, List<Face> faces, String line) throws IOException {
+	private static void parseFace(String[] parts, int positionCount, int uvCount, int normalCount, List<Face> faces, String material,
+			String line) throws IOException {
 		int count = parts.length - 1;
 		if (count < 3) {
 			throw new IOException("Face with less than 3 vertices: " + line);
@@ -90,7 +99,7 @@ public final class ObjGeometry {
 			normals[i] = index.length > 2 && !index[2].isEmpty() ? resolveIndex(index[2], normalCount, line) : -1;
 		}
 
-		faces.add(new Face(vertices, texCoords, normals));
+		faces.add(new Face(vertices, texCoords, normals, material));
 	}
 
 	private static int resolveIndex(String raw, int count, String line) throws IOException {

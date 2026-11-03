@@ -1,5 +1,6 @@
 package ${package}.client.obj;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -69,6 +70,7 @@ public final class ObjModelLoader implements ClientModInitializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MODID + "-obj");
 	private static final ResourceLocation MANIFEST = new ResourceLocation(MODID, "obj_models.json");
 	private static final ResourceLocation GENERATED_MANIFEST = new ResourceLocation(MODID, "obj_models_generated.json");
+	private static final ResourceLocation GENERATED_ITEM_MANIFEST = new ResourceLocation(MODID, "obj_items_generated.json");
 	private static final Pattern VALID_NAME = Pattern.compile("[a-z0-9_.-]+");
 
 	private static volatile ResourceManager resources;
@@ -101,6 +103,7 @@ public final class ObjModelLoader implements ClientModInitializer {
 			Set<ResourceLocation> usedObjects = new HashSet<>();
 
 			loadManifest(resourceManager, GENERATED_MANIFEST, definitions, usedObjects);
+			loadManifest(resourceManager, GENERATED_ITEM_MANIFEST, definitions, usedObjects);
 			loadManifest(resourceManager, MANIFEST, definitions, usedObjects);
 			discoverModels(resourceManager, definitions, usedObjects);
 
@@ -246,8 +249,11 @@ public final class ObjModelLoader implements ClientModInitializer {
 	/**
 	 * Reads the generated blockstate JSON and extracts the x/y rotation of every
 	 * state variant, so facing/axis blocks rotate their OBJ model correctly.
+	 * Multipart blockstates are supported when the part actually references the
+	 * model that is replaced by the OBJ.
 	 */
-	private static Map<BlockState, int[]> loadRotations(ResourceManager manager, ResourceLocation blockId) {
+	private static Map<BlockState, int[]> loadRotations(ResourceManager manager, ObjModelDefinition definition) {
+		ResourceLocation blockId = definition.blockId;
 		Map<BlockState, int[]> rotations = new HashMap<>();
 		if (manager == null) {
 			return rotations;
@@ -261,54 +267,150 @@ public final class ObjModelLoader implements ClientModInitializer {
 
 		try (BufferedReader reader = resource.get().openAsReader()) {
 			JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
-			if (!root.has("variants") || !root.get("variants").isJsonObject()) {
-				return rotations;
-			}
-
-			JsonObject variants = root.getAsJsonObject("variants");
-			Map<String, int[]> byKey = new HashMap<>();
-			for (Map.Entry<String, JsonElement> entry : variants.entrySet()) {
-				JsonElement value = entry.getValue();
-				if (value.isJsonArray()) {
-					if (value.getAsJsonArray().size() == 0) {
-						continue;
-					}
-					value = value.getAsJsonArray().get(0);
-				}
-				if (!value.isJsonObject()) {
-					continue;
-				}
-
-				JsonObject variant = value.getAsJsonObject();
-				int x = variant.has("x") ? variant.get("x").getAsInt() : 0;
-				int y = variant.has("y") ? variant.get("y").getAsInt() : 0;
-				byKey.put(entry.getKey().replace(" ", ""), new int[]{x, y});
-			}
-
-			Block block = BuiltInRegistries.BLOCK.get(blockId);
-			if (block == Blocks.AIR) {
-				return rotations;
-			}
-
-			for (BlockState state : block.getStateDefinition().getPossibleStates()) {
-				int[] rotation = null;
-				for (Map.Entry<String, int[]> entry : byKey.entrySet()) {
-					if (matches(entry.getKey(), state)) {
-						rotation = entry.getValue();
-						break;
-					}
-				}
-				if (rotation == null) {
-					rotation = byKey.get("");
-				}
-				if (rotation != null) {
-					rotations.put(state, rotation);
-				}
+			if (root.has("variants") && root.get("variants").isJsonObject()) {
+				readVariantRotations(root.getAsJsonObject("variants"), blockId, rotations);
+			} else if (root.has("multipart") && root.get("multipart").isJsonArray()) {
+				readMultipartRotations(root.getAsJsonArray("multipart"), definition, rotations);
 			}
 		} catch (Exception e) {
 			LOGGER.warn("Failed to read blockstate rotations '{}' for '{}'", location, blockId, e);
 		}
 		return rotations;
+	}
+
+	private static void readVariantRotations(JsonObject variants, ResourceLocation blockId, Map<BlockState, int[]> rotations) {
+		Map<String, int[]> byKey = new HashMap<>();
+		for (Map.Entry<String, JsonElement> entry : variants.entrySet()) {
+			JsonElement value = entry.getValue();
+			if (value.isJsonArray()) {
+				if (value.getAsJsonArray().size() == 0) {
+					continue;
+				}
+				value = value.getAsJsonArray().get(0);
+			}
+			if (!value.isJsonObject()) {
+				continue;
+			}
+
+			JsonObject variant = value.getAsJsonObject();
+			int x = variant.has("x") ? variant.get("x").getAsInt() : 0;
+			int y = variant.has("y") ? variant.get("y").getAsInt() : 0;
+			byKey.put(entry.getKey().replace(" ", ""), new int[]{x, y});
+		}
+
+		Block block = BuiltInRegistries.BLOCK.get(blockId);
+		if (block == Blocks.AIR) {
+			return;
+		}
+
+		for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+			int[] rotation = null;
+			for (Map.Entry<String, int[]> entry : byKey.entrySet()) {
+				if (matches(entry.getKey(), state)) {
+					rotation = entry.getValue();
+					break;
+				}
+			}
+			if (rotation == null) {
+				rotation = byKey.get("");
+			}
+			if (rotation != null) {
+				rotations.put(state, rotation);
+			}
+		}
+	}
+
+	private static void readMultipartRotations(JsonArray multipart, ObjModelDefinition definition,
+			Map<BlockState, int[]> rotations) {
+		Block block = BuiltInRegistries.BLOCK.get(definition.blockId);
+		if (block == Blocks.AIR) {
+			return;
+		}
+
+		List<JsonObject> ownParts = new ArrayList<>();
+		for (JsonElement element : multipart) {
+			if (!element.isJsonObject()) {
+				continue;
+			}
+			JsonObject part = element.getAsJsonObject();
+			if (!part.has("apply") || !part.get("apply").isJsonObject()) {
+				continue;
+			}
+			JsonObject apply = part.getAsJsonObject("apply");
+			if (referencesModel(apply, definition)) {
+				ownParts.add(part);
+			}
+		}
+		if (ownParts.isEmpty()) {
+			return;
+		}
+
+		for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+			for (JsonObject part : ownParts) {
+				JsonObject apply = part.getAsJsonObject("apply");
+				if (part.has("when") && !matchesWhen(part.get("when"), state)) {
+					continue;
+				}
+				int x = apply.has("x") ? apply.get("x").getAsInt() : 0;
+				int y = apply.has("y") ? apply.get("y").getAsInt() : 0;
+				rotations.put(state, new int[]{x, y});
+				break;
+			}
+		}
+	}
+
+	private static boolean referencesModel(JsonObject apply, ObjModelDefinition definition) {
+		if (!apply.has("model") || !apply.get("model").isJsonPrimitive()) {
+			return false;
+		}
+		ResourceLocation model = parseId(apply.get("model").getAsString());
+		return model != null && model.equals(definition.modelId);
+	}
+
+	private static boolean matchesWhen(JsonElement when, BlockState state) {
+		if (when == null || when.isJsonNull()) {
+			return true;
+		}
+		if (when.isJsonObject()) {
+			JsonObject condition = when.getAsJsonObject();
+			if (condition.has("OR") && condition.get("OR").isJsonArray()) {
+				for (JsonElement element : condition.getAsJsonArray("OR")) {
+					if (matchesWhen(element, state)) {
+						return true;
+					}
+				}
+				return false;
+			}
+			if (condition.has("AND") && condition.get("AND").isJsonArray()) {
+				for (JsonElement element : condition.getAsJsonArray("AND")) {
+					if (!matchesWhen(element, state)) {
+						return false;
+					}
+				}
+				return true;
+			}
+			for (Map.Entry<String, JsonElement> entry : condition.entrySet()) {
+				Property<?> property = state.getBlock().getStateDefinition().getProperty(entry.getKey());
+				if (property == null) {
+					return false;
+				}
+				JsonElement value = entry.getValue();
+				String expected = value.isJsonPrimitive() ? value.getAsString() : value.toString();
+				if (!valueName(state, property).equals(expected)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		if (when.isJsonArray()) {
+			for (JsonElement element : when.getAsJsonArray()) {
+				if (!matchesWhen(element, state)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return true;
 	}
 
 	private static boolean matches(String key, BlockState state) {
@@ -394,8 +496,8 @@ public final class ObjModelLoader implements ClientModInitializer {
 
 		int blocks = 0;
 		for (ObjModelDefinition definition : definitions.values()) {
-			if (!BuiltInRegistries.BLOCK.containsKey(definition.blockId)) {
-				LOGGER.warn("OBJ model '{}' is configured for unknown block '{}'", definition.objLocation, definition.blockId);
+			if (!definition.modelId.getPath().startsWith("block/")
+					|| !BuiltInRegistries.BLOCK.containsKey(definition.blockId)) {
 				continue;
 			}
 
@@ -411,7 +513,7 @@ public final class ObjModelLoader implements ClientModInitializer {
 				LOGGER.info("Using cutout render layer for OBJ block '{}'", definition.blockId);
 			}
 
-			Map<BlockState, int[]> rotations = loadRotations(resources, definition.blockId);
+			Map<BlockState, int[]> rotations = loadRotations(resources, definition);
 
 			BlockStateResolver resolver = new BlockStateResolver() {
 				@Override

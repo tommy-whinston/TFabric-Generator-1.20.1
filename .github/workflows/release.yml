@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate plugin structure
+        run: python tools/validate_plugin.py
+
+      - name: Build plugin zip
+        run: python build_zip.py
+
+      - name: Extract release notes
+        run: python tools/changelog_section.py "${GITHUB_REF_NAME}" > RELEASE_NOTES.md
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "TFabric-Generator-1.20.1.zip" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "TFabric-Generator-1.20.1 ${GITHUB_REF_NAME}" \
+            --notes-file RELEASE_NOTES.md \
+            --verify-tag

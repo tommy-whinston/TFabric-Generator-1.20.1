@@ -1,0 +1,12 @@
+<#-- @formatter:off -->
+{
+  "parent": "item/generated",
+  "textures": {
+<#if var_item??>
+    "layer0": "${data.getItemTextureFor(var_item).format("%s:item/%s")}"
+<#else>
+    "layer0": "${data.texture.format("%s:item/%s")}"
+</#if>
+  }
+}
+<#-- @formatter:on -->

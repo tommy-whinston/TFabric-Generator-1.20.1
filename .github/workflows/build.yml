@@ -1,0 +1,52 @@
+name: Build plugin
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Validate and build zip
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate plugin structure
+        run: python tools/validate_plugin.py
+
+      - name: Build plugin zip
+        run: python build_zip.py
+
+      - name: Inspect zip
+        run: |
+          python - <<'PY'
+          import json
+          import zipfile
+
+          with zipfile.ZipFile("TFabric-Generator-1.20.1.zip") as archive:
+              names = set(archive.namelist())
+              assert "plugin.json" in names, "plugin.json is not at the zip root"
+              assert "fabric-1.20.1-tfabric/generator.yaml" in names, "generator.yaml is missing"
+              assert "fabric-1.20.1-tfabric/templates/modbase/obj/ObjModelLoader.java.ftl" in names
+              assert not any(name.startswith(".github/") for name in names), ".github leaked into the zip"
+              info = json.loads(archive.read("plugin.json").decode("utf-8"))["info"]
+              print(f"Built {info['name']} {info['version']} ({len(names)} files)")
+          PY
+
+      - name: Upload plugin zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: TFabric-Generator-1.20.1
+          path: TFabric-Generator-1.20.1.zip
+          if-no-files-found: error

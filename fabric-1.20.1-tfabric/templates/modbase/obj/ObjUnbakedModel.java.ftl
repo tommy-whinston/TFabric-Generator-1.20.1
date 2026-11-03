@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -38,6 +39,26 @@ public final class ObjUnbakedModel implements UnbakedModel {
 			transform(30, 225, 0, 0, 0, 0, 0.625f),
 			transform(0, 0, 0, 0, 3, 0, 0.25f),
 			transform(0, 0, 0, 0, 0, 0, 0.5f));
+
+	private static final ItemTransforms TOOL_TRANSFORMS = new ItemTransforms(
+			transform(0, 90, -55, 0, 4, 0.5f, 0.85f),
+			transform(0, -90, 55, 0, 4, 0.5f, 0.85f),
+			transform(0, 90, -25, 1.13f, 3.2f, 1.13f, 0.68f),
+			transform(0, -90, 25, 1.13f, 3.2f, 1.13f, 0.68f),
+			transform(0, 180, 0, 0, 13, 7, 1),
+			transform(0, 0, 0, 0, 0, 0, 1),
+			transform(0, 0, 0, 0, 2, 0, 0.5f),
+			transform(0, 0, 0, 0, 0, 0, 1));
+
+	private static final ItemTransforms ITEM_TRANSFORMS = new ItemTransforms(
+			transform(0, 0, 0, 0, 3, 1, 0.55f),
+			transform(0, 0, 0, 0, 3, 1, 0.55f),
+			transform(0, 45, -25, 0, 4, 2, 1.7f),
+			transform(0, -135, 25, 0, 4, 2, 1.7f),
+			transform(0, 180, 0, 0, 13, 7, 1),
+			transform(0, 0, 0, 0, 0, 0, 1),
+			transform(0, 0, 0, 0, 2, 0, 0.5f),
+			transform(0, 0, 0, 0, 0, 0, 1));
 
 	private final ObjModelDefinition definition;
 	private final int rotationX;
@@ -65,7 +86,8 @@ public final class ObjUnbakedModel implements UnbakedModel {
 
 	@Override
 	public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> textureGetter, ModelState state, ResourceLocation modelId) {
-		TextureAtlasSprite sprite = textureGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, definition.texture));
+		TextureAtlasSprite particle = textureGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, definition.texture));
+		Map<String, TextureAtlasSprite> sprites = new HashMap<>();
 
 		Matrix4f matrix = null;
 		Matrix3f normalMatrix = null;
@@ -76,25 +98,57 @@ public final class ObjUnbakedModel implements UnbakedModel {
 
 		List<BakedQuad> quads = new ArrayList<>();
 		for (ObjGeometry.Face face : definition.geometry.faces) {
+			ResourceLocation texture = definition.textures.getOrDefault(face.material, definition.texture);
+			TextureAtlasSprite sprite = sprites.computeIfAbsent(face.material,
+					key -> textureGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, texture)));
+
 			int count = face.vertices.length;
 			if (count == 4) {
-				addQuad(quads, face.vertices, face.texCoords, face.normals, 0, 1, 2, 3, sprite, matrix, normalMatrix);
+				addQuad(quads, face.vertices, face.texCoords, face.normals, 0, 1, 2, 3, sprite, matrix, normalMatrix, false);
+				if (definition.doubleSided) {
+					addQuad(quads, face.vertices, face.texCoords, face.normals, 3, 2, 1, 0, sprite, matrix, normalMatrix, true);
+				}
 			} else if (count == 3) {
-				addQuad(quads, face.vertices, face.texCoords, face.normals, 0, 1, 2, 2, sprite, matrix, normalMatrix);
+				addQuad(quads, face.vertices, face.texCoords, face.normals, 0, 1, 2, 2, sprite, matrix, normalMatrix, false);
+				if (definition.doubleSided) {
+					addQuad(quads, face.vertices, face.texCoords, face.normals, 2, 1, 0, 0, sprite, matrix, normalMatrix, true);
+				}
 			} else {
 				for (int i = 1; i < count - 1; i++) {
-					addQuad(quads, face.vertices, face.texCoords, face.normals, 0, i, i + 1, i + 1, sprite, matrix, normalMatrix);
+					addQuad(quads, face.vertices, face.texCoords, face.normals, 0, i, i + 1, i + 1, sprite, matrix, normalMatrix, false);
+					if (definition.doubleSided) {
+						addQuad(quads, face.vertices, face.texCoords, face.normals, i + 1, i, 0, 0, sprite, matrix, normalMatrix, true);
+					}
 				}
 			}
 		}
 
+		boolean itemModel = modelId.getPath().startsWith("item/");
+		List<BakedQuad> unculled = new ArrayList<>();
 		Map<Direction, List<BakedQuad>> culled = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			culled.put(direction, List.of());
+			culled.put(direction, new ArrayList<>());
 		}
 
-		return new SimpleBakedModel(quads, culled, definition.ambientOcclusion, definition.blockLight, definition.gui3d, sprite,
-				BLOCK_TRANSFORMS, ItemOverrides.EMPTY);
+		if (itemModel || !definition.culling) {
+			unculled.addAll(quads);
+		} else {
+			for (BakedQuad quad : quads) {
+				Direction direction = quad.getDirection();
+				if (direction == null) {
+					unculled.add(quad);
+				} else {
+					culled.get(direction).add(quad);
+				}
+			}
+		}
+
+		ItemTransforms transforms = "tool".equals(definition.display) ? TOOL_TRANSFORMS
+				: "item".equals(definition.display) ? ITEM_TRANSFORMS : BLOCK_TRANSFORMS;
+		boolean blockModel = "block".equals(definition.display);
+
+		return new SimpleBakedModel(unculled, culled, definition.ambientOcclusion && blockModel,
+				definition.blockLight && blockModel, definition.gui3d, particle, transforms, ItemOverrides.EMPTY);
 	}
 
 	private static ItemTransform transform(float rx, float ry, float rz, float tx, float ty, float tz, float scale) {
@@ -102,7 +156,7 @@ public final class ObjUnbakedModel implements UnbakedModel {
 	}
 
 	private void addQuad(List<BakedQuad> output, int[] faceVertices, int[] faceTexCoords, int[] faceNormals, int a, int b, int c, int d,
-			TextureAtlasSprite sprite, Matrix4f matrix, Matrix3f normalMatrix) {
+			TextureAtlasSprite sprite, Matrix4f matrix, Matrix3f normalMatrix, boolean reverseSide) {
 		int[] vertices = {faceVertices[a], faceVertices[b], faceVertices[c], faceVertices[d]};
 		int[] texCoords = {faceTexCoords[a], faceTexCoords[b], faceTexCoords[c], faceTexCoords[d]};
 		int[] normals = {faceNormals[a], faceNormals[b], faceNormals[c], faceNormals[d]};
@@ -121,7 +175,7 @@ public final class ObjUnbakedModel implements UnbakedModel {
 		}
 
 		float[] vertexNormal = vertexNormal(normals);
-		if (vertexNormal != null && dot(normal, vertexNormal) < 0.0f) {
+		if (!reverseSide && vertexNormal != null && dot(normal, vertexNormal) < 0.0f) {
 			reverse(vertices, texCoords, normals);
 			normal = new float[]{-normal[0], -normal[1], -normal[2]};
 		}
@@ -180,7 +234,7 @@ public final class ObjUnbakedModel implements UnbakedModel {
 
 			data[base + 4] = Float.floatToRawIntBits(sprite.getU(Mth.clamp(u, 0.0f, 1.0f) * 16.0f));
 			data[base + 5] = Float.floatToRawIntBits(sprite.getV(Mth.clamp(v, 0.0f, 1.0f) * 16.0f));
-			data[base + 6] = 0;
+			data[base + 6] = definition.tintIndex;
 			data[base + 7] = 0;
 		}
 
