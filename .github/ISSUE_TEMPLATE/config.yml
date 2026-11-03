@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: Installation and OBJ guide
-    url: https://github.com/nodura1488-sudo/TFabric-Generator-1.20.1/blob/main/README_EN.md
+    url: https://github.com/tommy-whinston/TFabric-Generator-1.20.1/blob/main/README_EN.md
     about: Read the English README before opening an issue.
   - name: Downloads
-    url: https://github.com/nodura1488-sudo/TFabric-Generator-1.20.1/releases
+    url: https://github.com/tommy-whinston/TFabric-Generator-1.20.1/releases
     about: Get the latest plugin zip.

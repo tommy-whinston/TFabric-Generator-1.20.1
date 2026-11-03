@@ -30,7 +30,7 @@ def main() -> int:
     print(f"## {version}")
     print(match.group(1).strip())
     print("\n**Full changelog / Полный список изменений:** "
-          "[CHANGELOG.md](https://github.com/nodura1488-sudo/TFabric-Generator-1.20.1/blob/main/CHANGELOG.md)")
+          "[CHANGELOG.md](https://github.com/tommy-whinston/TFabric-Generator-1.20.1/blob/main/CHANGELOG.md)")
     return 0
 
 

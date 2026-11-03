@@ -11,8 +11,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/nodura1488-sudo/TFabric-Generator-1.20.1/releases">
-    <img src="https://img.shields.io/github/v/release/nodura1488-sudo/TFabric-Generator-1.20.1?style=for-the-badge&label=release" alt="Release">
+  <a href="https://github.com/tommy-whinston/TFabric-Generator-1.20.1/releases">
+    <img src="https://img.shields.io/github/v/release/tommy-whinston/TFabric-Generator-1.20.1?style=for-the-badge&label=release" alt="Release">
   </a>
   <img src="https://img.shields.io/badge/MCreator-2024.4-7c3aed?style=for-the-badge" alt="MCreator 2024.4">
   <img src="https://img.shields.io/badge/Minecraft-1.20.1-16a34a?style=for-the-badge" alt="Minecraft 1.20.1">
@@ -23,10 +23,10 @@
 
 <p align="center">
   <a href="README_EN.md">English</a> ·
-  <a href="https://github.com/nodura1488-sudo/TFabric-Generator-1.20.1/releases">Releases</a> ·
+  <a href="https://github.com/tommy-whinston/TFabric-Generator-1.20.1/releases">Releases</a> ·
   <a href="CHANGELOG.md">Changelog</a> ·
   <a href="CONTRIBUTING.md">Contributing</a> ·
-  <a href="https://github.com/nodura1488-sudo/TFabric-Generator-1.20.1/issues">Issues</a>
+  <a href="https://github.com/tommy-whinston/TFabric-Generator-1.20.1/issues">Issues</a>
 </p>
 
 ---
@@ -126,7 +126,7 @@
 ## Установка
 
 1. Скачай `TFabric-Generator-1.20.1.zip` со страницы
-   [Releases](https://github.com/nodura1488-sudo/TFabric-Generator-1.20.1/releases).
+   [Releases](https://github.com/tommy-whinston/TFabric-Generator-1.20.1/releases).
 2. Открой **MCreator → Preferences → Manage plugins → Install plugin from file**
    и выбери zip.
 3. Перезапусти MCreator.
@@ -184,7 +184,7 @@ python build_zip.py
 ## Участие в разработке
 
 См. [CONTRIBUTING.md](CONTRIBUTING.md). Баги и идеи — в
-[Issues](https://github.com/nodura1488-sudo/TFabric-Generator-1.20.1/issues).
+[Issues](https://github.com/tommy-whinston/TFabric-Generator-1.20.1/issues).
 Для багов с рендером приложи `latest.log` и сгенерированные манифесты.
 
 ## Сделано с ИИ
