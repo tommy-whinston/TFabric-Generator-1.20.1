@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1
+
+- Fixed `NullPointerException` when saving elements in workspaces that contain
+  tag elements (missing `tags` specification in the generator).
+- Tab search is still not available on Minecraft 1.20.1; the field remains
+  intentionally disabled.
+
 ## 1.0.0
 
 - Initial public release of **TFabric-Generator-1.20.1**.
