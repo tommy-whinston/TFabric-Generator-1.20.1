@@ -97,29 +97,6 @@
 - BSL wind support for leaves, grass and bushes (configured in the shader
   pack's `block.properties`).
 
-## How it works
-
-<p align="center">
-  <img src="docs/art/pipeline.png" alt="MCreator → TFabric Generator → Fabric Mod" width="900">
-</p>
-
-## Gallery
-
-<table align="center">
-  <tr>
-    <td align="center"><img src="docs/art/blocks.png" width="380" alt="Blocks and tags"><br>
-      <sub><b>Blocks, tags and states</b></sub></td>
-    <td align="center"><img src="docs/art/trees.png" width="380" alt="Trees and plants"><br>
-      <sub><b>Trees, plants and saplings</b></sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/art/tools.png" width="380" alt="Tools and items"><br>
-      <sub><b>Tools, items and armor</b></sub></td>
-    <td align="center"><img src="docs/art/models.png" width="380" alt="Models and geometry"><br>
-      <sub><b>Models, geometry and materials</b></sub></td>
-  </tr>
-</table>
-
 ## Installation
 
 1. Download `TFabric-Generator-1.20.1.zip` from

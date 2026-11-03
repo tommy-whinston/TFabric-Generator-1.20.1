@@ -100,29 +100,6 @@
 - Поддержка ветра BSL для листвы, травы и кустов (настраивается в
   `block.properties` шейдерпака).
 
-## Как это работает
-
-<p align="center">
-  <img src="docs/art/pipeline.png" alt="MCreator → TFabric Generator → Fabric Mod" width="900">
-</p>
-
-## Галерея
-
-<table align="center">
-  <tr>
-    <td align="center"><img src="docs/art/blocks.png" width="380" alt="Блоки и теги"><br>
-      <sub><b>Блоки, теги и состояния</b></sub></td>
-    <td align="center"><img src="docs/art/trees.png" width="380" alt="Деревья и растения"><br>
-      <sub><b>Деревья, растения и саженцы</b></sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/art/tools.png" width="380" alt="Инструменты и предметы"><br>
-      <sub><b>Инструменты, предметы и броня</b></sub></td>
-    <td align="center"><img src="docs/art/models.png" width="380" alt="Модели и геометрия"><br>
-      <sub><b>Модели, геометрия и материалы</b></sub></td>
-  </tr>
-</table>
-
 ## Установка
 
 1. Скачай `TFabric-Generator-1.20.1.zip` со страницы
