@@ -2,6 +2,11 @@
   <img src="docs/banner.png" alt="TFabric Generator 1.20.1">
 </p>
 
+> **Сделано с ИИ.** Плагин развивается человеком совместно с ИИ-ассистентом:
+> код, шаблоны, документация и CI создаются и правятся с помощью ИИ. ИИ
+> используется только при разработке плагина и не попадает в сгенерированные
+> моды.
+
 <h1 align="center">TFabric-Generator-1.20.1</h1>
 
 <p align="center">
@@ -18,7 +23,7 @@
   <img src="https://img.shields.io/badge/Minecraft-1.20.1-16a34a?style=for-the-badge" alt="Minecraft 1.20.1">
   <img src="https://img.shields.io/badge/Fabric-0.90.7-f59e0b?style=for-the-badge" alt="Fabric API 0.90.7">
   <img src="https://img.shields.io/badge/License-LGPL--3.0-64748b?style=for-the-badge" alt="LGPL-3.0">
-  <img src="https://img.shields.io/badge/AI--assisted-DeepSeek%20V4-8b5cf6?style=for-the-badge" alt="AI-assisted">
+  <img src="https://img.shields.io/badge/AI--assisted-8b5cf6?style=for-the-badge" alt="AI-assisted">
 </p>
 
 <p align="center">
@@ -163,18 +168,6 @@ python build_zip.py
 См. [CONTRIBUTING.md](CONTRIBUTING.md). Баги и идеи — в
 [Issues](https://github.com/tommy-whinston/TFabric-Generator-1.20.1/issues).
 Для багов с рендером приложи `latest.log` и сгенерированные манифесты.
-
-## Сделано с ИИ
-
-Плагин разрабатывается в связке **человек + ИИ**:
-
-- **ИИ-агент:** OpenCode + **DeepSeek V4.1 Flash** — пишет и правит шаблоны,
-  Java-код, документацию, CI и тесты.
-- **Человек:** ставит задачи, проверяет сборку в MCreator и запускает
-  тестовые миры в Minecraft, принимает результат.
-
-ИИ используется **только при разработке плагина**. В сгенерированные моды он
-не попадает: там обычный Fabric-код, шаблоны MCreator и Fabric API.
 
 ## Лицензия и авторы
 

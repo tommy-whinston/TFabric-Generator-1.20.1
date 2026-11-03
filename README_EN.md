@@ -2,6 +2,11 @@
   <img src="docs/banner_en.png" alt="TFabric Generator 1.20.1">
 </p>
 
+> **Made with AI.** This plugin is developed by a human together with an AI
+> assistant: code, templates, documentation and CI are written and edited with
+> AI. AI is used only during plugin development and is not shipped into
+> generated mods.
+
 <h1 align="center">TFabric-Generator-1.20.1</h1>
 
 <p align="center">
@@ -18,7 +23,7 @@
   <img src="https://img.shields.io/badge/Minecraft-1.20.1-16a34a?style=for-the-badge" alt="Minecraft 1.20.1">
   <img src="https://img.shields.io/badge/Fabric-0.90.7-f59e0b?style=for-the-badge" alt="Fabric API 0.90.7">
   <img src="https://img.shields.io/badge/License-LGPL--3.0-64748b?style=for-the-badge" alt="LGPL-3.0">
-  <img src="https://img.shields.io/badge/AI--assisted-DeepSeek%20V4-8b5cf6?style=for-the-badge" alt="AI-assisted">
+  <img src="https://img.shields.io/badge/AI--assisted-8b5cf6?style=for-the-badge" alt="AI-assisted">
 </p>
 
 <p align="center">
@@ -161,18 +166,6 @@ repository root.
 See [CONTRIBUTING.md](CONTRIBUTING.md). Report bugs and ideas in
 [Issues](https://github.com/tommy-whinston/TFabric-Generator-1.20.1/issues).
 For rendering bugs, attach `latest.log` and the generated manifests.
-
-## Made with AI
-
-This plugin is developed by a **human + AI** team:
-
-- **AI agent:** OpenCode + **DeepSeek V4.1 Flash** writes and edits templates,
-  Java code, documentation, CI and tests.
-- **Human:** defines tasks, verifies builds in MCreator, runs test worlds in
-  Minecraft and accepts the result.
-
-AI is used **only during plugin development**. It is not shipped into generated
-mods: those contain regular Fabric code, MCreator templates and Fabric API.
 
 ## License and credits
 
