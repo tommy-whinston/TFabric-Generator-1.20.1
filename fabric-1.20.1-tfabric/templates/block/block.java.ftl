@@ -24,8 +24,8 @@
 <#include "../procedures.java.ftl">
 <#include "../triggers.java.ftl">
 
-<#assign elementTabs = data.creativeTabs?map(tab -> tab?string)>
-<#assign customTabs = elementTabs?filter(e -> e?starts_with('CUSTOM:'))>
+<#assign tabMap = w.getCreativeTabMap()>
+<#assign customTabs = tabMap.keySet()?filter(e -> e?starts_with('CUSTOM:'))>
 
 package ${package}.block;
 

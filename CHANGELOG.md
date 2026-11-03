@@ -1,5 +1,20 @@
 # Changelog / История изменений
 
+## 1.1.1
+
+### English
+- Fixed custom creative tabs for blocks. The block template used
+  `data.creativeTabs` instead of the workspace tab map, so regenerated blocks
+  were not added to their tabs and Minecraft hid the empty tabs.
+- Regenerate the workspace after updating to apply the fix.
+
+### Русский
+- Исправлены кастомные креативные вкладки для блоков. Шаблон блока использовал
+  `data.creativeTabs` вместо карты вкладок воркспейса, из-за чего
+  перегенерированные блоки не добавлялись во вкладки, а пустые вкладки
+  Minecraft скрывал.
+- После обновления перегенерируй воркспейс, чтобы применить фикс.
+
 ## 1.1.0
 
 ### English

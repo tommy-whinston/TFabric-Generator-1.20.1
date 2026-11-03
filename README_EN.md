@@ -129,8 +129,12 @@ into a new project.
 - Regenerate the project after updating to apply the new templates.
 - See [CHANGELOG.md](CHANGELOG.md) for details.
 
-## What's new in 1.1.0
+## What's new
 
+**1.1.1**
+- Fixed custom creative tabs: regenerated blocks are added to their tabs again.
+
+**1.1.0**
 - Stability: improved rendering and Sodium/Iris compatibility for complex
   models; culling is now opt-in and disabled by default.
 - Models: OBJ for items, tools and armor, multiple textures, transforms and
