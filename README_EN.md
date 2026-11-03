@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.png" alt="TFabric Generator 1.20.1">
+  <img src="docs/banner_en.png" alt="TFabric Generator 1.20.1">
 </p>
 
 <h1 align="center">TFabric-Generator-1.20.1</h1>
@@ -97,11 +97,28 @@
 - BSL wind support for leaves, grass and bushes (configured in the shader
   pack's `block.properties`).
 
-## Screenshot
+## How it works
 
 <p align="center">
-  <img src="docs/screenshots/obj-blocks.png" alt="Example world with custom models" width="820">
+  <img src="docs/art/pipeline.png" alt="MCreator → TFabric Generator → Fabric Mod" width="900">
 </p>
+
+## Gallery
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="docs/art/blocks.png" width="380" alt="Blocks and tags"><br>
+      <sub><b>Blocks, tags and states</b></sub></td>
+    <td align="center"><img src="docs/art/trees.png" width="380" alt="Trees and plants"><br>
+      <sub><b>Trees, plants and saplings</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/art/tools.png" width="380" alt="Tools and items"><br>
+      <sub><b>Tools, items and armor</b></sub></td>
+    <td align="center"><img src="docs/art/models.png" width="380" alt="Models and geometry"><br>
+      <sub><b>Models, geometry and materials</b></sub></td>
+  </tr>
+</table>
 
 ## Installation
 
@@ -136,7 +153,7 @@ into a new project.
   models; culling is now opt-in and disabled by default.
 - Models: OBJ for items, tools and armor, multiple textures, transforms and
   double-sided faces.
-- Documentation: README rewritten from scratch, new banner, screenshots,
+- Documentation: README rewritten from scratch, new banner, artwork,
   CONTRIBUTING and issue templates.
 - CI: automatic plugin validation and release builds through GitHub Actions.
 

@@ -17,7 +17,7 @@
 - Added the `tint_index` manifest option for tinted block models.
 - OBJ quads are now **double-sided by default** (`double_sided`): single-sided
   models no longer show see-through gaps in the trunk and canopy.
-- README rewritten from scratch, new banner and screenshots, AI-development
+- README rewritten from scratch, new banner and artwork, AI-development
   disclosure, `CONTRIBUTING.md`, issue templates and GitHub Actions for
   validation and releases.
 
@@ -38,7 +38,7 @@
 - Добавлена опция манифеста `tint_index` для тонированных блочных моделей.
 - Квады OBJ теперь **двусторонние по умолчанию** (`double_sided`):
   односторонние модели больше не дают просветов в стволе и кроне.
-- README переписан с нуля (RU/EN), новый баннер и скриншоты, раздел о
+- README переписан с нуля (RU/EN), новый баннер и иллюстрации, раздел о
   разработке с ИИ, `CONTRIBUTING.md`, issue-шаблоны и GitHub Actions для
   проверки и релизов.
 
