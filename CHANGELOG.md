@@ -1,5 +1,16 @@
 # Changelog / История изменений
 
+## 1.1.2
+
+### English
+- Fixed custom creative tabs properly: blocks now use only their own assigned
+  tabs (`getUnmappedValue`) instead of being added to every custom tab.
+
+### Русский
+- Кастомные креативные вкладки исправлены окончательно: блоки теперь
+  добавляются только в назначенные им вкладки (`getUnmappedValue`), а не во
+  все кастомные вкладки сразу.
+
 ## 1.1.1
 
 ### English

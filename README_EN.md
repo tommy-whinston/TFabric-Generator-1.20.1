@@ -131,6 +131,9 @@ into a new project.
 
 ## What's new
 
+**1.1.2**
+- Blocks are added only to their assigned custom tabs, not to every custom tab.
+
 **1.1.1**
 - Fixed custom creative tabs: regenerated blocks are added to their tabs again.
 
