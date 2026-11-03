@@ -132,12 +132,13 @@ into a new project.
 
 ## What's new in 1.1.0
 
-- OBJ models for items, tools and armor.
-- Multiple textures, transforms and double-sided faces.
-- Culling is now opt-in and disabled by default, so complex models keep all
-  their faces.
-- Stable Sodium/Iris rendering.
-- New README, screenshots, CONTRIBUTING, issue templates and GitHub Actions.
+- Stability: improved rendering and Sodium/Iris compatibility for complex
+  models; culling is now opt-in and disabled by default.
+- Models: OBJ for items, tools and armor, multiple textures, transforms and
+  double-sided faces.
+- Documentation: README rewritten from scratch, new banner, screenshots,
+  CONTRIBUTING and issue templates.
+- CI: automatic plugin validation and release builds through GitHub Actions.
 
 ## Limitations
 
